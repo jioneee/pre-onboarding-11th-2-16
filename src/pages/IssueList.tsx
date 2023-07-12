@@ -2,7 +2,7 @@ import axios from 'axios';
 import { useState, useEffect } from 'react';
 import styled from '@emotion/styled';
 
-function List() {
+function IssueList() {
   const url = 'https://api.github.com/repos/facebook/react/issues';
 
   const [issueList, setIssueList] = useState<null | any[]>(null);
@@ -18,8 +18,9 @@ function List() {
       const response = await axios.get(`${url}`, { headers });
       const issues = response.data;
       const openIssues = issues.filter((issue: any) => issue.state === 'open');
-      setIssueList(openIssues);
-      console.log('res', openIssues);
+      const sortedIssues = openIssues.sort((a: any, b: any) => b.comments - a.comments);
+      setIssueList(sortedIssues);
+      console.log('res', sortedIssues);
     } catch (error) {}
   };
   useEffect(() => {
@@ -63,7 +64,7 @@ function List() {
   );
 }
 
-export default List;
+export default IssueList;
 
 const Container = styled.div`
   box-sizing: border-box;

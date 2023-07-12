@@ -1,5 +1,6 @@
 import './App.css';
-import List from './pages/List';
+import { Header } from './components/Header';
+import IssueList from './pages/IssueList';
 
 function App() {
   // const BASE_URL = 'https://api.github.com/repos';
@@ -17,7 +18,8 @@ function App() {
 
   return (
     <div>
-      <List />
+      <Header />
+      <IssueList />
     </div>
   );
 }
