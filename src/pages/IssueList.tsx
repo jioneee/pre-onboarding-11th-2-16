@@ -1,13 +1,16 @@
 import styled from '@emotion/styled';
 
 import axios from 'axios';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Loading } from '../components/Loading';
+import { UserContext } from '../context/UserContext';
 
 function IssueList() {
   const navigate = useNavigate();
   const url = 'https://api.github.com/repos/facebook/react/issues';
 
+  const { setLoading } = useContext(UserContext);
   const [issueList, setIssueList] = useState<null | any[]>(null);
 
   const issuePage = (id: any) => {
@@ -27,12 +30,16 @@ function IssueList() {
       const openIssues = issues.filter((issue: any) => issue.state === 'open');
       const sortedIssues = openIssues.sort((a: any, b: any) => b.comments - a.comments);
       setIssueList(sortedIssues);
+      setLoading(false);
       console.log('res', sortedIssues);
-    } catch (error) {}
+    } catch (error) {
+      setLoading(false);
+    }
   };
   useEffect(() => {
     getIssueList();
   }, []);
+
   return (
     <div>
       {issueList !== null ? (
@@ -40,18 +47,15 @@ function IssueList() {
           {issueList.map((issue, index) => (
             <Container key={index} onClick={() => issuePage(issue.number)}>
               <TextBox>
-                {' '}
                 <Text className='bold'>#{issue.number}</Text>
-                <Text>제목:{issue.title}</Text>
+                <Text>제목: {issue.title}</Text>
               </TextBox>
               <TextBox>
-                {' '}
-                <Text>작성자:{issue.user.id}</Text>
-                <Text>작성일:{new Date(issue.created_at).toLocaleDateString()}</Text>
+                <Text>작성자: {issue.user.id}</Text>
+                <Text>작성일: {new Date(issue.created_at).toLocaleDateString()}</Text>
               </TextBox>
               <TextBox>
-                {' '}
-                <Text>코멘트:{issue.comments}</Text>
+                <Text>코멘트: {issue.comments}</Text>
               </TextBox>
 
               {(index + 1) % 4 === 0 && (
@@ -65,7 +69,7 @@ function IssueList() {
           ))}
         </div>
       ) : (
-        <div>Loading...</div>
+        <Loading />
       )}
     </div>
   );

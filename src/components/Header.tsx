@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 
 export function Header() {
-  return <Container>'Organization Name / Repository Name'</Container>;
+  return <Container>Organization Name / Repository Name</Container>;
 }
 const Container = styled.div`
   box-sizing: border-box;
