@@ -1,11 +1,18 @@
-import axios from 'axios';
-import { useState, useEffect } from 'react';
 import styled from '@emotion/styled';
 
+import axios from 'axios';
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+
 function IssueList() {
+  const navigate = useNavigate();
   const url = 'https://api.github.com/repos/facebook/react/issues';
 
   const [issueList, setIssueList] = useState<null | any[]>(null);
+
+  const issuePage = (id: any) => {
+    navigate(`/issue/${id}`);
+  };
 
   const getIssueList = async () => {
     try {
@@ -31,7 +38,7 @@ function IssueList() {
       {issueList !== null ? (
         <div>
           {issueList.map((issue, index) => (
-            <Container key={index}>
+            <Container key={index} onClick={() => issuePage(issue.number)}>
               <TextBox>
                 {' '}
                 <Text className='bold'>#{issue.number}</Text>
