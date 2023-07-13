@@ -1,7 +1,14 @@
 import styled from '@emotion/styled';
 
 export function Header() {
-  return <Container>Organization Name / Repository Name</Container>;
+  const url = 'https://api.github.com/repos/facebook/react/issues';
+  const organizationName = url.split('/')[4];
+  const repositoryName = url.split('/')[5];
+  return (
+    <Container>
+      {organizationName} / {repositoryName}
+    </Container>
+  );
 }
 const Container = styled.div`
   box-sizing: border-box;

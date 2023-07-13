@@ -56,7 +56,7 @@ export function Issue() {
       </IssueContainer>
 
       <IssueContainer>
-        <ReactMarkdown remarkPlugins={[remarkGfm]}>{issue.body}</ReactMarkdown>
+        <ReactMarkdown remarkPlugins={[remarkGfm]} children={issue.body}></ReactMarkdown>
       </IssueContainer>
     </div>
   );

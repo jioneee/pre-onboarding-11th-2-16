@@ -30,12 +30,15 @@ function IssueList() {
       };
 
       const response = await axios.get(`${url}?_limit=10&_page=${page.current}`, { headers });
+      console.log('res', response);
       const issues = response.data;
       const openIssues = issues.filter((issue: any) => issue.state === 'open');
       const sortedIssues = openIssues.sort((a: any, b: any) => b.comments - a.comments);
       // setIssueList(sortedIssues);
       setIssueList((prevIssueList: any[]) => [...prevIssueList, ...sortedIssues]);
+
       setHasNextPage(sortedIssues.length === 10);
+
       if (sortedIssues.length) {
         page.current += 1;
       }
@@ -56,6 +59,7 @@ function IssueList() {
     const io = new IntersectionObserver((entries, observer) => {
       if (entries[0].isIntersecting) {
         getIssueList();
+        console.log('Intersected!');
       }
     });
     io.observe(observerTargetEl.current);
@@ -112,6 +116,7 @@ const Container = styled.div`
   border-bottom: solid 1px black;
   margin: 15px auto;
   padding: 10px;
+  cursor: pointer;
   .bold {
     font-weight: 700;
   }

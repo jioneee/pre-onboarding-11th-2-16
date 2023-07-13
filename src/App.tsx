@@ -6,7 +6,7 @@ import { Issue } from './pages/Issue';
 import { ErrorPage } from './pages/ErrorPage';
 import { LoaderContextProvider } from './context/LoaderContext';
 
-function App() {
+function App(): React.ReactElement {
   return (
     <LoaderContextProvider>
       <div>
