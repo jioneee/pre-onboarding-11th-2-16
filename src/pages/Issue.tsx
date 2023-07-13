@@ -3,6 +3,7 @@ import styled from '@emotion/styled';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { ReactMarkdown } from 'react-markdown/lib/react-markdown';
 
 export function Issue() {
   const { id } = useParams<{ id: string }>();
@@ -53,7 +54,9 @@ export function Issue() {
         </TextBox>
       </IssueContainer>
 
-      <IssueContainer>{issue.body}</IssueContainer>
+      <IssueContainer>
+        <ReactMarkdown>{issue.body}</ReactMarkdown>
+      </IssueContainer>
     </div>
   );
 }
