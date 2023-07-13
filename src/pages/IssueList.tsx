@@ -74,26 +74,31 @@ function IssueList() {
       {issueList !== null ? (
         <div>
           {issueList.map((issue, index) => (
-            <Container key={index} onClick={() => issuePage(issue.number)}>
-              <TextBox>
-                <Text className='bold'>#{issue.number}</Text>
-                <Text>제목: {issue.title}</Text>
-              </TextBox>
-              <TextBox>
-                <Text>작성자: {issue.user.login}</Text>
-                <Text>작성일: {new Date(issue.created_at).toLocaleDateString()}</Text>
-              </TextBox>
-              <TextBox>
-                <Text>코멘트: {issue.comments}</Text>
-              </TextBox>
-
-              {(index + 1) % 4 === 0 && (
-                <TextBox className='ad'>
-                  <a href='https://www.wanted.co.kr/' target='_blank' rel='noopener noreferrer'>
-                    <img src='https://image.wanted.co.kr/optimize?src=https%3A%2F%2Fstatic.wanted.co.kr%2Fimages%2Fuserweb%2Flogo_wanted_black.png&w=110&q=100' alt='wanted' />
-                  </a>
+            <Container key={issue.number}>
+              <div key={index} onClick={() => issuePage(issue.number)}>
+                <TextBox>
+                  <Text className='bold'>#{issue.number}</Text>
+                  <Text className='bold'>[{issue.title}]</Text>
                 </TextBox>
-              )}
+                <TextBox>
+                  <Text>작성자: {issue.user.login}</Text>
+                  <Text>작성일: {new Date(issue.created_at).toLocaleDateString()}</Text>
+                </TextBox>
+                <TextBox className='comment'>
+                  <Text>코멘트: {issue.comments}</Text>
+                </TextBox>
+              </div>
+
+              <div>
+                {' '}
+                {(index + 1) % 4 === 0 && (
+                  <TextBox className='ad'>
+                    <a href='https://www.wanted.co.kr/' target='_blank' rel='noopener noreferrer'>
+                      <img className='image' src='https://image.wanted.co.kr/optimize?src=https%3A%2F%2Fstatic.wanted.co.kr%2Fimages%2Fuserweb%2Flogo_wanted_black.png&w=110&q=100' alt='wanted' />
+                    </a>
+                  </TextBox>
+                )}
+              </div>
             </Container>
           ))}
         </div>
@@ -112,16 +117,22 @@ const Container = styled.div`
   width: 700px;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: left;
   border-bottom: solid 1px black;
   margin: 15px auto;
   padding: 10px;
   cursor: pointer;
   .bold {
-    font-weight: 700;
+    font-weight: 500;
   }
   .ad {
     border: solid 2px blue;
+  }
+  .image {
+    min-width: 200px;
+  }
+  .comment {
+    text-align: right;
   }
 `;
 

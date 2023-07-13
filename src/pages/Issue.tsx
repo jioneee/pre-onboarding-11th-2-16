@@ -43,7 +43,7 @@ export function Issue() {
             <img src={issue.user.avatar_url} alt={issue.user.login} />
           </Text>
           <Text className='bold'>#{issue.number}</Text>
-          <Text>{issue.title}</Text>
+          <Text className='bold'>[{issue.title}]</Text>
         </TextBox>
 
         <TextBox>
@@ -72,7 +72,7 @@ const IssueContainer = styled.div`
   margin: 15px auto;
   padding: 10px;
   .bold {
-    font-weight: 700;
+    font-weight: 500;
   }
   img {
     width: 50px;

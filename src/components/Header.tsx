@@ -2,8 +2,8 @@ import styled from '@emotion/styled';
 
 export function Header() {
   const url = 'https://api.github.com/repos/facebook/react/issues';
-  const organizationName = url.split('/')[4];
-  const repositoryName = url.split('/')[5];
+  const organizationName = url.split('/')[4].toLocaleUpperCase();
+  const repositoryName = url.split('/')[5].toLocaleUpperCase();
   return (
     <Container>
       {organizationName} / {repositoryName}
