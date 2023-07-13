@@ -12,62 +12,54 @@ function IssueList() {
 
   const { setLoading } = useContext(LoaderContext);
   const [issueList, setIssueList] = useState<any[]>([]);
+  // const [target, setTarget] = useState(null)
+  const [page, setPage] = useState<Number>(1);
 
-  const [hasNextPage, setHasNextPage] = useState<boolean>(true);
-  const page = useRef<number>(1);
-  const observerTargetEl = useRef<HTMLDivElement>(null);
+  const targetRef = useRef<HTMLDivElement | null>(null);
 
   const issuePage = (id: any) => {
     navigate(`/issue/${id}`);
   };
-
-  const getIssueList = useCallback(async () => {
-    try {
-      const headers = {
-        Accept: 'application/vnd.github+json',
-        Authorization: `Bearer ${process.env.REACT_APP_ACCESS_TOKEN}`,
-        'X-GitHub-Api-Version': '2022-11-28',
-      };
-
-      const response = await axios.get(`${url}?_limit=10&_page=${page.current}`, { headers });
-      console.log('res', response);
-      const issues = response.data;
-      const openIssues = issues.filter((issue: any) => issue.state === 'open');
-      const sortedIssues = openIssues.sort((a: any, b: any) => b.comments - a.comments);
-      // setIssueList(sortedIssues);
-      setIssueList((prevIssueList: any[]) => [...prevIssueList, ...sortedIssues]);
-
-      setHasNextPage(sortedIssues.length === 10);
-
-      if (sortedIssues.length) {
-        page.current += 1;
+  const callback = useCallback(
+    (entry: IntersectionObserverEntry[], observer: IntersectionObserver) => {
+      if (entry[0].isIntersecting) {
+        setPage((prev: any) => (prev = prev + 1));
+        observer.unobserve(entry[0].target);
       }
-      setLoading(false);
-
-      console.log('res', sortedIssues);
-    } catch (error) {
-      setLoading(false);
-    }
-  }, []);
-  // useEffect(() => {
-  //   getIssueList();
-  // }, []);
+    },
+    [setPage]
+  );
 
   useEffect(() => {
-    if (!observerTargetEl.current || !hasNextPage) return;
+    const getIssueList = async () => {
+      try {
+        const headers = {
+          Accept: 'application/vnd.github+json',
+          Authorization: `Bearer ${process.env.REACT_APP_ACCESS_TOKEN}`,
+          'X-GitHub-Api-Version': '2022-11-28',
+        };
 
-    const io = new IntersectionObserver((entries, observer) => {
-      if (entries[0].isIntersecting) {
-        getIssueList();
-        console.log('Intersected!');
+        const response = await axios.get(`${url}?per_page=30&page=${page}`, { headers });
+        const issues = response.data;
+        const openIssues = issues.filter((issue: any) => issue.state === 'open');
+        const sortedIssues = openIssues.sort((a: any, b: any) => b.comments - a.comments);
+
+        setIssueList(sortedIssues);
+        if (sortedIssues.length === 0) return;
+        setLoading(false);
+
+        console.log('res', sortedIssues);
+      } catch (error) {
+        setLoading(false);
       }
-    });
-    io.observe(observerTargetEl.current);
-
-    return () => {
-      io.disconnect();
     };
-  }, [getIssueList, hasNextPage]);
+
+    getIssueList();
+    if (!targetRef.current) return;
+    const observer = new IntersectionObserver(callback);
+    observer.observe(targetRef.current);
+    return () => observer.disconnect();
+  }, [page, callback]);
 
   return (
     <div>
@@ -101,11 +93,11 @@ function IssueList() {
               </div>
             </Container>
           ))}
+          <div ref={targetRef} />
         </div>
       ) : (
         <Loading />
       )}
-      <div ref={observerTargetEl} />
     </div>
   );
 }
