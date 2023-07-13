@@ -4,6 +4,7 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { ReactMarkdown } from 'react-markdown/lib/react-markdown';
+import remarkGfm from 'remark-gfm';
 
 export function Issue() {
   const { id } = useParams<{ id: string }>();
@@ -55,7 +56,7 @@ export function Issue() {
       </IssueContainer>
 
       <IssueContainer>
-        <ReactMarkdown>{issue.body}</ReactMarkdown>
+        <ReactMarkdown remarkPlugins={[remarkGfm]}>{issue.body}</ReactMarkdown>
       </IssueContainer>
     </div>
   );
