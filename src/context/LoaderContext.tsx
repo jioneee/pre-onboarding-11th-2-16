@@ -10,14 +10,14 @@ const initialContext: Context = {
   setLoading: () => {},
 };
 
-export const UserContext = createContext(initialContext);
+export const LoaderContext = createContext(initialContext);
 
-export const UserContextProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const LoaderContextProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [isLoading, setLoading] = useState(initialContext.isLoading);
 
   const contextValue: Context = {
     isLoading,
     setLoading,
   };
-  return <UserContext.Provider value={contextValue}>{children}</UserContext.Provider>;
+  return <LoaderContext.Provider value={contextValue}>{children}</LoaderContext.Provider>;
 };

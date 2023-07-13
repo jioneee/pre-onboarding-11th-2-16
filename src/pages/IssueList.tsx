@@ -1,23 +1,27 @@
 import styled from '@emotion/styled';
 
 import axios from 'axios';
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect, useContext, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Loading } from '../components/Loading';
-import { UserContext } from '../context/UserContext';
+import { LoaderContext } from '../context/LoaderContext';
 
 function IssueList() {
   const navigate = useNavigate();
   const url = 'https://api.github.com/repos/facebook/react/issues';
 
-  const { setLoading } = useContext(UserContext);
-  const [issueList, setIssueList] = useState<null | any[]>(null);
+  const { setLoading } = useContext(LoaderContext);
+  const [issueList, setIssueList] = useState<any[]>([]);
+
+  const [hasNextPage, setHasNextPage] = useState<boolean>(true);
+  const page = useRef<number>(1);
+  const observerTargetEl = useRef<HTMLDivElement>(null);
 
   const issuePage = (id: any) => {
     navigate(`/issue/${id}`);
   };
 
-  const getIssueList = async () => {
+  const getIssueList = useCallback(async () => {
     try {
       const headers = {
         Accept: 'application/vnd.github+json',
@@ -25,20 +29,41 @@ function IssueList() {
         'X-GitHub-Api-Version': '2022-11-28',
       };
 
-      const response = await axios.get(`${url}`, { headers });
+      const response = await axios.get(`${url}?_limit=10&_page=${page.current}`, { headers });
       const issues = response.data;
       const openIssues = issues.filter((issue: any) => issue.state === 'open');
       const sortedIssues = openIssues.sort((a: any, b: any) => b.comments - a.comments);
-      setIssueList(sortedIssues);
+      // setIssueList(sortedIssues);
+      setIssueList((prevIssueList: any[]) => [...prevIssueList, ...sortedIssues]);
+      setHasNextPage(sortedIssues.length === 10);
+      if (sortedIssues.length) {
+        page.current += 1;
+      }
       setLoading(false);
+
       console.log('res', sortedIssues);
     } catch (error) {
       setLoading(false);
     }
-  };
-  useEffect(() => {
-    getIssueList();
   }, []);
+  // useEffect(() => {
+  //   getIssueList();
+  // }, []);
+
+  useEffect(() => {
+    if (!observerTargetEl.current || !hasNextPage) return;
+
+    const io = new IntersectionObserver((entries, observer) => {
+      if (entries[0].isIntersecting) {
+        getIssueList();
+      }
+    });
+    io.observe(observerTargetEl.current);
+
+    return () => {
+      io.disconnect();
+    };
+  }, [getIssueList, hasNextPage]);
 
   return (
     <div>
@@ -51,7 +76,7 @@ function IssueList() {
                 <Text>제목: {issue.title}</Text>
               </TextBox>
               <TextBox>
-                <Text>작성자: {issue.user.id}</Text>
+                <Text>작성자: {issue.user.login}</Text>
                 <Text>작성일: {new Date(issue.created_at).toLocaleDateString()}</Text>
               </TextBox>
               <TextBox>
@@ -71,6 +96,7 @@ function IssueList() {
       ) : (
         <Loading />
       )}
+      <div ref={observerTargetEl} />
     </div>
   );
 }

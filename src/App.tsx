@@ -4,11 +4,11 @@ import { Header } from './components/Header';
 import IssueList from './pages/IssueList';
 import { Issue } from './pages/Issue';
 import { ErrorPage } from './pages/ErrorPage';
-import { UserContextProvider } from './context/UserContext';
+import { LoaderContextProvider } from './context/LoaderContext';
 
 function App() {
   return (
-    <UserContextProvider>
+    <LoaderContextProvider>
       <div>
         <Header />
         <BrowserRouter>
@@ -19,7 +19,7 @@ function App() {
           </Routes>
         </BrowserRouter>
       </div>
-    </UserContextProvider>
+    </LoaderContextProvider>
   );
 }
 
