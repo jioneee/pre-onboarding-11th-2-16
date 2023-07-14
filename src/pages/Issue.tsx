@@ -1,14 +1,15 @@
 import styled from '@emotion/styled';
 
 import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
+import { ApiContext } from '../context/ApiContext';
 import { useParams } from 'react-router-dom';
 import { ReactMarkdown } from 'react-markdown/lib/react-markdown';
 import remarkGfm from 'remark-gfm';
 
 export function Issue() {
   const { id } = useParams<{ id: string }>();
-  const url = `https://api.github.com/repos/facebook/react/issues/${id}`;
+  const { url } = useContext(ApiContext);
   const [issue, setIssue] = useState<any>(null);
 
   useEffect(() => {
@@ -20,7 +21,7 @@ export function Issue() {
           'X-GitHub-Api-Version': '2022-11-28',
         };
 
-        const response = await axios.get(url, { headers });
+        const response = await axios.get(`${url}/${id}`, { headers });
         setIssue(response.data);
         console.log('res', response);
       } catch (error) {
@@ -29,7 +30,7 @@ export function Issue() {
     };
 
     getIssue();
-  }, [url]);
+  }, [id, url]);
 
   if (issue === null) {
     return <div>Loading...</div>;

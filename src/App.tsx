@@ -4,11 +4,11 @@ import { Header } from './components/Header';
 import IssueList from './pages/IssueList';
 import { Issue } from './pages/Issue';
 import { ErrorPage } from './pages/ErrorPage';
-import { LoaderContextProvider } from './context/LoaderContext';
+import { ApiContextProvider } from './context/ApiContext';
 
 function App(): React.ReactElement {
   return (
-    <LoaderContextProvider>
+    <ApiContextProvider>
       <div>
         <Header />
         <BrowserRouter>
@@ -19,7 +19,7 @@ function App(): React.ReactElement {
           </Routes>
         </BrowserRouter>
       </div>
-    </LoaderContextProvider>
+    </ApiContextProvider>
   );
 }
 

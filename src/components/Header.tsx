@@ -1,7 +1,9 @@
 import styled from '@emotion/styled';
+import { useContext } from 'react';
+import { ApiContext } from '../context/ApiContext';
 
 export function Header() {
-  const url = 'https://api.github.com/repos/facebook/react/issues';
+  const { url } = useContext(ApiContext);
   const organizationName = url.split('/')[4].toLocaleUpperCase();
   const repositoryName = url.split('/')[5].toLocaleUpperCase();
   return (

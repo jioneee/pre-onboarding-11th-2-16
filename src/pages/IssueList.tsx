@@ -1,18 +1,16 @@
 import styled from '@emotion/styled';
 
 import axios from 'axios';
-import { useState, useEffect, useContext, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback, useContext } from 'react';
+import { ApiContext } from '../context/ApiContext';
 import { useNavigate } from 'react-router-dom';
 import { Loading } from '../components/Loading';
-import { LoaderContext } from '../context/LoaderContext';
 
 function IssueList() {
   const navigate = useNavigate();
-  const url = 'https://api.github.com/repos/facebook/react/issues';
+  const { url } = useContext(ApiContext);
 
-  const { setLoading } = useContext(LoaderContext);
   const [issueList, setIssueList] = useState<any[]>([]);
-  // const [target, setTarget] = useState(null)
   const [page, setPage] = useState<Number>(1);
 
   const targetRef = useRef<HTMLDivElement | null>(null);
@@ -20,15 +18,12 @@ function IssueList() {
   const issuePage = (id: any) => {
     navigate(`/issue/${id}`);
   };
-  const callback = useCallback(
-    (entry: IntersectionObserverEntry[], observer: IntersectionObserver) => {
-      if (entry[0].isIntersecting) {
-        setPage((prev: any) => (prev = prev + 1));
-        observer.unobserve(entry[0].target);
-      }
-    },
-    [setPage]
-  );
+  const callback = useCallback((entry: IntersectionObserverEntry[], observer: IntersectionObserver) => {
+    if (entry[0].isIntersecting) {
+      setPage((prev: any) => (prev = prev + 1));
+      observer.unobserve(entry[0].target);
+    }
+  }, []);
 
   useEffect(() => {
     const getIssueList = async () => {
@@ -46,11 +41,11 @@ function IssueList() {
 
         setIssueList(sortedIssues);
         if (sortedIssues.length === 0) return;
-        setLoading(false);
+        // setLoading(false);
 
         console.log('res', sortedIssues);
       } catch (error) {
-        setLoading(false);
+        // setLoading(false);
       }
     };
 
@@ -59,7 +54,7 @@ function IssueList() {
     const observer = new IntersectionObserver(callback);
     observer.observe(targetRef.current);
     return () => observer.disconnect();
-  }, [page, callback]);
+  }, [page, callback, url]);
 
   return (
     <div>
