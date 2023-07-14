@@ -41,12 +41,9 @@ function IssueList() {
 
         setIssueList(sortedIssues);
         if (sortedIssues.length === 0) return;
-        // setLoading(false);
 
         console.log('res', sortedIssues);
-      } catch (error) {
-        // setLoading(false);
-      }
+      } catch (error) {}
     };
 
     getIssueList();

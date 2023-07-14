@@ -6,6 +6,7 @@ import { ApiContext } from '../context/ApiContext';
 import { useParams } from 'react-router-dom';
 import { ReactMarkdown } from 'react-markdown/lib/react-markdown';
 import remarkGfm from 'remark-gfm';
+import { Loading } from '../components/Loading';
 
 export function Issue() {
   const { id } = useParams<{ id: string }>();
@@ -33,7 +34,7 @@ export function Issue() {
   }, [id, url]);
 
   if (issue === null) {
-    return <div>Loading...</div>;
+    return <Loading />;
   }
 
   return (
